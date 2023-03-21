@@ -3,6 +3,7 @@ import { Form } from './Form';
 import ContactsList from './Contacts';
 import Filter from './Filter';
 import { nanoid } from 'nanoid';
+import { Wrapper } from './Contacts.styled';
 
 export class App extends Component {
   state = {
@@ -10,19 +11,16 @@ export class App extends Component {
     filter: '',
   };
 
-  addContact = data => {
-    data.id = nanoid();
-    const normalizedName = data.name.toLowerCase();
-    const contact = {
-      data,
-    };
+  addContact = contact => {
+    contact.id = nanoid();
+    const normalizedName = contact.name.toLowerCase();
 
     if (
       this.state.contacts.find(
-        contact => contact.data.name.toLowerCase() === normalizedName
+        contact => contact.name.toLowerCase() === normalizedName
       )
     ) {
-      return alert(`${data.name} is already in contacts!`);
+      return alert(`${contact.name} is already in contacts!`);
     }
 
     this.setState(({ contacts }) => ({
@@ -32,9 +30,7 @@ export class App extends Component {
 
   deleteContact = contactId => {
     this.setState(prevState => ({
-      contacts: prevState.contacts.filter(
-        contact => contact.data.id !== contactId
-      ),
+      contacts: prevState.contacts.filter(contact => contact.id !== contactId),
     }));
   };
 
@@ -46,7 +42,7 @@ export class App extends Component {
     const { filter, contacts } = this.state;
     const normalizedFilter = filter.toLowerCase();
     return contacts.filter(contact =>
-      contact.data.name.toLowerCase().includes(normalizedFilter)
+      contact.name.toLowerCase().includes(normalizedFilter)
     );
   };
 
@@ -54,7 +50,7 @@ export class App extends Component {
     const { filter } = this.state;
     const visibleContacts = this.getVisibleContacts();
     return (
-      <div>
+      <Wrapper>
         <h1>Phonebook</h1>
         <Form onSubmit={this.addContact} />
         <h2>Contacts</h2>
@@ -63,7 +59,7 @@ export class App extends Component {
           contacts={visibleContacts}
           onDeleteContact={this.deleteContact}
         />
-      </div>
+      </Wrapper>
     );
   }
 }
